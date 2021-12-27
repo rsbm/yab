@@ -2,6 +2,25 @@
 
 built with [Yew](https://github.com/yewstack/yew) and [Axum](https://github.com/tokio-rs/axum).
 
+## Installation
+
+### wasm-pack
+
+<https://rustwasm.github.io/wasm-pack/installer/>
+
+```shell
+cargo install wasm-pack
+
+```
+
+### rollup
+
+<https://rollupjs.org/guide/en/#installation>
+
+```shell
+npm install --global rollup
+```
+
 ## Build
 
 ### Frontend
