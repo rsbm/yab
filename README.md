@@ -1,5 +1,7 @@
 # Yab
 
+Yew + Axum + blog = Yab
+
 built with [Yew](https://github.com/yewstack/yew) and [Axum](https://github.com/tokio-rs/axum).
 
 ## Installation
