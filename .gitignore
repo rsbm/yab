@@ -3,3 +3,5 @@
 
 frontend/pkg/*
 static
+
+.DS_Store
