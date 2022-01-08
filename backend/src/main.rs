@@ -46,7 +46,7 @@ async fn main() {
         post(move |a1: Json<SayHello>| say_hello(ctx_, a1)),
     );
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = "0.0.0.0:3000".parse().unwrap();
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
