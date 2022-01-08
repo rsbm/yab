@@ -17,12 +17,6 @@ struct Context {
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let main_page = Html(
-        tokio::fs::read_to_string("./static/index.html")
-            .await
-            .unwrap(),
-    );
-
     let ctx = Arc::new(RwLock::new(Context { hello_count: 0 }));
     let app = Router::new()
         .nest(
@@ -36,8 +30,7 @@ async fn main() {
                 },
             ),
         )
-        .layer(TraceLayer::new_for_http())
-        .route("/", get(move || async move { main_page }));
+        .layer(TraceLayer::new_for_http());
     let ctx_ = Arc::clone(&ctx);
     let app = app.route("/hello", get(move || get_hello(ctx_)));
     let ctx_ = Arc::clone(&ctx);
@@ -48,6 +41,7 @@ async fn main() {
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     tracing::debug!("listening on {}", addr);
+    println!("Fuuuuuuuuck");
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
