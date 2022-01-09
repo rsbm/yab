@@ -5,7 +5,6 @@ use axum::{
     Json, Router,
 };
 use serde::Deserialize;
-use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tower_http::{services::ServeDir, trace::TraceLayer};
