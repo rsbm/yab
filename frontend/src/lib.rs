@@ -4,6 +4,6 @@ mod components;
 
 #[wasm_bindgen]
 pub fn run_app() -> Result<(), JsValue> {
-    yew::start_app::<components::model::Model>();
+    yew::start_app::<components::api::Model>();
     Ok(())
 }

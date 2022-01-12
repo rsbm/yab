@@ -58,8 +58,9 @@ async fn get_hello(ctx: Arc<RwLock<Context>>) -> impl IntoResponse {
 }
 
 async fn say_hello(ctx: Arc<RwLock<Context>>, Json(payload): Json<SayHello>) -> impl IntoResponse {
-    ctx.write().await.hello_count += payload.count;
-    (StatusCode::OK, Json(()))
+    let mut ctx = ctx.write().await;
+    ctx.hello_count += payload.count;
+    (StatusCode::OK, Json(ctx.hello_count))
 }
 
 #[derive(Deserialize)]
