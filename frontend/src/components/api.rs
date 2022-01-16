@@ -3,7 +3,6 @@ use std::{
     fmt::{self, Debug, Display, Formatter},
 };
 
-use wasm_bindgen::prelude::*;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen_futures::JsFuture;
