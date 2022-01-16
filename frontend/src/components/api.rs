@@ -27,12 +27,12 @@ impl From<JsValue> for FetchError {
     }
 }
 
-// enum FetchState<T> {
-//     NotFetching,
-//     Fetching,
-//     Success(T),
-//     Failed(FetchError),
-// }
+enum FetchState<T> {
+    NotFetching,
+    Fetching,
+    Success(T),
+    Failed(FetchError),
+}
 
 /// https://rustwasm.github.io/wasm-bindgen/examples/fetch.html
 async fn fetch(url: &str, method: &str) -> Result<String, FetchError> {
@@ -54,8 +54,7 @@ async fn fetch(url: &str, method: &str) -> Result<String, FetchError> {
 
 #[function_component(Model)]
 pub fn model() -> Html {
-    let value = use_state(|| 0);
-    // let fetch_state = use_state(|| FetchState::<i32>::NotFetching);
+    let fetch_state = use_state(|| FetchState::<i32>::NotFetching);
 
     // use_effect_with_deps(
     //     move |_| {
@@ -67,42 +66,46 @@ pub fn model() -> Html {
     // );
 
     let onclick = {
-        let value = value.clone();
+        let fetch_state = fetch_state.clone();
         Callback::from(move |ev: MouseEvent| {
             ev.prevent_default();
-            let value = value.clone();
+            let fetch_state = fetch_state.clone();
+            fetch_state.set(FetchState::Fetching);
             spawn_local(async move {
-                let api_value = fetch("/hello", "POST").await.unwrap();
-                value.set(api_value.parse().unwrap());
+                match fetch("/hello", "POST").await {
+                    Ok(api_value) => {
+                        fetch_state.set(FetchState::Success(api_value.parse().unwrap()));
+                    }
+                    Err(err) => fetch_state.set(FetchState::Failed(err)),
+                }
             });
         })
     };
-    // match &*fetch_state {
-    //     FetchState::NotFetching => {
-    html! {
-        <div>
-            <button {onclick}>{"+1"}</button>
-            <p>{*value}</p>
-        </div>
+    match &*fetch_state {
+        FetchState::NotFetching => {
+            html! {
+                <div>
+                    <button {onclick}>{"+1"}</button>
+                </div>
+            }
+        }
+        FetchState::Fetching => {
+            html! {
+                <p>{"Fetching.."}</p>
+            }
+        }
+        FetchState::Success(value) => {
+            html! {
+                <div>
+                    <button {onclick}>{"+1"}</button>
+                    <p>{value}</p>
+                </div>
+            }
+        }
+        FetchState::Failed(err) => {
+            html! {
+                <p>{err}</p>
+            }
+        }
     }
-    // }
-    // FetchState::Fetching => {
-    //     html! {
-    //         <p>{"Fetching.."}</p>
-    //     }
-    // }
-    // FetchState::Success(value) => {
-    //     html! {
-    //         <div>
-    //             <button {onclick}>{"+1"}</button>
-    //             <p>{value}</p>
-    //         </div>
-    //     }
-    // }
-    // FetchState::Failed(err) => {
-    //     html! {
-    //         <p>{err}</p>
-    //     }
-    // }
-    // }
 }
